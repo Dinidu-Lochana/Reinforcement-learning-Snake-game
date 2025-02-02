@@ -81,7 +81,7 @@ class ReinforcementSnakeGame:
         # game over
         reward = 0
         game_over = False
-        if self._is_collision() or self.frameIteration > 100*len(self.snake): # If nothing happen
+        if self.is_collision() or self.frameIteration > 100*len(self.snake): # If nothing happen
             game_over = True
             reward = -10
             return reward, game_over, self.score
@@ -102,7 +102,7 @@ class ReinforcementSnakeGame:
         game_over = False
         return reward, game_over, self.score
 
-    def _is_collision(self, pt=None):
+    def is_collision(self, pt=None):
         if pt is None:
             pt = self.head
         # boundary
