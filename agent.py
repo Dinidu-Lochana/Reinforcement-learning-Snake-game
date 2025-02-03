@@ -3,6 +3,9 @@ import random
 import numpy as np
 from reinforcement_snake_game import ReinforcementSnakeGame, Direction, Point
 from collections import deque
+from Reinforcement_model import LinearQNet, QTrainer
+from helper import plot
+
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -13,10 +16,10 @@ class Agent:
     def __init__(self):
         self.no_of_games = 0
         self.epsilon = 0 # Randomness
-        self.gamma = 0 # Discount rate
+        self.gamma = 0.9 # Discount rate
         self.memory = deque(maxlen=MAX_MEMORY) 
-        self.model = None
-        self.trainer = None
+        self.model = LinearQNet(11, 256, 3)
+        self.trainer = QTrainer(self.model, lr=LEARNING_RATE, gamma=self.gamma)
 
 
     def get_state(self, game):
@@ -131,11 +134,16 @@ def train():
 
             if score > record:
                 record = score
-                # agent.model.save()
+                agent.model.save()
 
             print('Game', agent.no_of_games, 'Score', score, 'Record', record)
 
             # plot
+            plot_scores.append(score)
+            total_score += score
+            mean_score = total_score / agent.no_of_games
+            plot_mean_scores.append(mean_score)
+            plot(plot_scores, plot_mean_scores)
 
 
 if __name__ == '__main__':
