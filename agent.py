@@ -95,7 +95,7 @@ class Agent:
         else:
             state0 = tf.convert_to_tensor(state, dtype=tf.float32)
             prediction = self.model.predict(state0)
-            move = tf.argmax(prediction).item()
+            move = int(tf.argmax(prediction, axis=-1).numpy().item())  
             final_move[move] = 1
 
         return final_move
