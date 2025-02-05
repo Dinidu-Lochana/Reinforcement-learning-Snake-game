@@ -23,7 +23,7 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 30
 
 class ReinforcementSnakeGame:
 
@@ -133,7 +133,7 @@ class ReinforcementSnakeGame:
 
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         index = clock_wise.index(self.direction)
-    
+
         # Ensure that the snake doesn't rotate 180 degrees
         if np.array_equal(action, [1, 0, 0]):  # Move straight
             new_direction = clock_wise[index]  # No change
@@ -143,19 +143,19 @@ class ReinforcementSnakeGame:
         else:  # [0, 0, 1] -> Turn left
             next_index = (index - 1) % 4
             new_direction = clock_wise[next_index]  # right -> up -> left -> down
-    
+
         # Prevent 180-degree turns (can't go directly opposite)
         if (self.direction == Direction.RIGHT and new_direction == Direction.LEFT) or \
            (self.direction == Direction.LEFT and new_direction == Direction.RIGHT) or \
            (self.direction == Direction.UP and new_direction == Direction.DOWN) or \
            (self.direction == Direction.DOWN and new_direction == Direction.UP):
             new_direction = self.direction  # Stay in the same direction
-    
+
         self.direction = new_direction
-    
+
         x = self.head.x
         y = self.head.y
-    
+
         if self.direction == Direction.RIGHT:
             x += BLOCK_SIZE
         elif self.direction == Direction.LEFT:
@@ -164,7 +164,7 @@ class ReinforcementSnakeGame:
             y += BLOCK_SIZE
         elif self.direction == Direction.UP:
             y -= BLOCK_SIZE
-    
+
         self.head = Point(x, y)
-    
+
 
