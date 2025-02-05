@@ -99,7 +99,6 @@ class ReinforcementSnakeGame:
         self.clock.tick(SPEED)
 
         # return game over score
-        game_over = False
         return reward, game_over, self.score
 
     def is_collision(self, pt=None):
@@ -130,26 +129,33 @@ class ReinforcementSnakeGame:
         pygame.display.flip()
 
     def _move(self, action):
-        # [straight, right, left]
+    # [straight, right, left]
 
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         index = clock_wise.index(self.direction)
-
-        if np.array_equal(action, [1, 0, 0]):
-            new_direction = clock_wise[index]  # no change
-        if np.array_equal(action, [0, 1, 0]):
+    
+        # Ensure that the snake doesn't rotate 180 degrees
+        if np.array_equal(action, [1, 0, 0]):  # Move straight
+            new_direction = clock_wise[index]  # No change
+        elif np.array_equal(action, [0, 1, 0]):  # Turn right
             next_index = (index + 1) % 4
-            new_direction = clock_wise[next_index] # right -> down -> left -> up
-        else: # [0 0 1]
+            new_direction = clock_wise[next_index]  # right -> down -> left -> up
+        else:  # [0, 0, 1] -> Turn left
             next_index = (index - 1) % 4
-            new_direction = clock_wise[next_index] # right -> up -> left -> down
-
-        self.direction = new_direction  
-        
-
+            new_direction = clock_wise[next_index]  # right -> up -> left -> down
+    
+        # Prevent 180-degree turns (can't go directly opposite)
+        if (self.direction == Direction.RIGHT and new_direction == Direction.LEFT) or \
+           (self.direction == Direction.LEFT and new_direction == Direction.RIGHT) or \
+           (self.direction == Direction.UP and new_direction == Direction.DOWN) or \
+           (self.direction == Direction.DOWN and new_direction == Direction.UP):
+            new_direction = self.direction  # Stay in the same direction
+    
+        self.direction = new_direction
+    
         x = self.head.x
         y = self.head.y
-
+    
         if self.direction == Direction.RIGHT:
             x += BLOCK_SIZE
         elif self.direction == Direction.LEFT:
@@ -158,7 +164,7 @@ class ReinforcementSnakeGame:
             y += BLOCK_SIZE
         elif self.direction == Direction.UP:
             y -= BLOCK_SIZE
-
+    
         self.head = Point(x, y)
-         
+    
 
